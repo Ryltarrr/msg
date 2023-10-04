@@ -14,3 +14,5 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 sqlx = { version = "0.7", features = [ "runtime-tokio", "tls-native-tls", "sqlite" ] }
 anyhow = "1.0.75"
 axum-macros = "0.3.8"
+askama = { version = "0.12.1", features = ["with-axum"] }
+askama_axum = "0.3.0"

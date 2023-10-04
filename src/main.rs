@@ -1,8 +1,9 @@
+use askama::Template;
 use axum::{
-    extract::State,
+    extract::{Path, State},
     http::StatusCode,
     response::{IntoResponse, Response},
-    routing::{get, post},
+    routing::{delete, get, post},
     Json, Router,
 };
 use axum_macros::debug_handler;
@@ -25,6 +26,7 @@ async fn main() {
         .route("/", get(root))
         .route("/messages", get(fetch_messages))
         .route("/messages", post(create_message))
+        .route("/messages/:message_id", delete(delete_message))
         .with_state(pool);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
@@ -35,17 +37,30 @@ async fn main() {
         .unwrap();
 }
 
-async fn root() -> &'static str {
-    "Hello, World!"
+#[derive(Template)]
+#[template(path = "hello.html")]
+struct HelloTemplate<'a> {
+    name: &'a str,
 }
 
-async fn fetch_messages(State(pool): State<SqlitePool>) -> Json<Vec<Message>> {
+#[derive(Template)]
+#[template(path = "messages.html")]
+struct MessagesTemplate {
+    messages: Vec<Message>,
+}
+
+async fn root() -> HelloTemplate<'static> {
+    HelloTemplate { name: "Justin" }
+}
+
+async fn fetch_messages(State(pool): State<SqlitePool>) -> MessagesTemplate {
     let records = sqlx::query_as!(Message, "select * from messages")
         .fetch_all(&pool)
         .await
         .unwrap();
 
-    Json(records)
+    // Json(records)
+    MessagesTemplate { messages: records }
 }
 
 #[derive(Debug, Deserialize)]
@@ -76,6 +91,24 @@ VALUES ( ?1 )
     .execute(&pool)
     .await?
     .last_insert_rowid();
+
+    Ok(id.to_string())
+}
+
+#[debug_handler]
+async fn delete_message(
+    State(pool): State<SqlitePool>,
+    Path(message_id): Path<String>,
+) -> Result<String, AppError> {
+    let id = sqlx::query!(
+        r#"
+DELETE FROM messages WHERE id = ?1
+        "#,
+        message_id
+    )
+    .execute(&pool)
+    .await?
+    .rows_affected();
 
     Ok(id.to_string())
 }
