@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
+
+    <h1>Messages</h1>
+
+    <div id="msg-list" hx-get="/messages" hx-swap="innerHTML" hx-trigger="load">
+      Messages
+    </div>
+
+    <form
+      hx-post="/messages"
+      hx-target="#msg-list"
+      hx-swap="beforeend"
+      _="on htmx:afterRequest reset() me"
+    >
+      <label>
+        Content:
+        <input type="text" name="content" />
+      </label>
+    </form>
+  </body>
+</html>

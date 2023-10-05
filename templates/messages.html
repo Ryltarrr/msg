@@ -1,5 +1,3 @@
 <div>
- {% for message in messages %}
-     <div><strong>{{ message.id }}</strong>{{ message.content }}</div>
- {% endfor %}
+  {% for message in messages %} {% include "message_item.html" %} {% endfor %}
 </div>
