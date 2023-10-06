@@ -5,6 +5,7 @@ use axum::{
 use msg::routes::{create_message, delete_message, fetch_messages, root};
 use sqlx::SqlitePool;
 use std::net::SocketAddr;
+use tower_http::services::ServeDir;
 
 #[tokio::main]
 async fn main() {
@@ -22,6 +23,7 @@ async fn main() {
         .route("/messages", get(fetch_messages))
         .route("/messages", post(create_message))
         .route("/messages/:message_id", delete(delete_message))
+        .nest_service("/dist", ServeDir::new("dist"))
         .with_state(pool);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));

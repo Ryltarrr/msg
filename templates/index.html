@@ -1,25 +1,36 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <body>
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
     <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
+    <link href="/dist/output.css" rel="stylesheet" />
 
-    <h1>Messages</h1>
+    <main class="container mx-auto">
+      <h1 class="text-red-500">Messages</h1>
+      <div
+        id="msg-list"
+        hx-get="/messages"
+        hx-swap="innerHTML"
+        hx-trigger="load"
+        class=""
+      >
+        Messages
+      </div>
 
-    <div id="msg-list" hx-get="/messages" hx-swap="innerHTML" hx-trigger="load">
-      Messages
-    </div>
-
-    <form
-      hx-post="/messages"
-      hx-target="#msg-list"
-      hx-swap="beforeend"
-      _="on htmx:afterRequest reset() me"
-    >
-      <label>
-        Content:
-        <input type="text" name="content" />
-      </label>
-    </form>
+      <form
+        hx-post="/messages"
+        hx-target="#msg-list"
+        hx-swap="beforeend"
+        _="on htmx:afterRequest reset() me"
+      >
+        <input
+          class="border border-black rounded p-2"
+          placeholder="Envoyer un message"
+          type="text"
+          name="content"
+        />
+        <button type="submit">Envoyer</button>
+      </form>
+    </main>
   </body>
 </html>
