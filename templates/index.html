@@ -7,15 +7,7 @@
 
     <main class="container mx-auto">
       <h1 class="text-red-500">Messages</h1>
-      <div
-        id="msg-list"
-        hx-get="/messages"
-        hx-swap="innerHTML"
-        hx-trigger="load"
-        class=""
-      >
-        Messages
-      </div>
+      <div id="msg-list" class="">{% include "messages.html" %}</div>
 
       <form
         hx-post="/messages"
@@ -24,7 +16,7 @@
         _="on htmx:afterRequest reset() me"
       >
         <input
-          class="border border-black rounded p-2"
+          class="border border-black rounded p-2 dark:text-blue-600"
           placeholder="Envoyer un message"
           type="text"
           name="content"

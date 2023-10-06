@@ -2,7 +2,7 @@ use axum::{
     routing::{delete, get, post},
     Router,
 };
-use msg::routes::{create_message, delete_message, fetch_messages, root};
+use msg::routes::{create_message, delete_message, root};
 use sqlx::SqlitePool;
 use std::net::SocketAddr;
 use tower_http::services::ServeDir;
@@ -20,7 +20,6 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(root))
-        .route("/messages", get(fetch_messages))
         .route("/messages", post(create_message))
         .route("/messages/:message_id", delete(delete_message))
         .nest_service("/dist", ServeDir::new("dist"))

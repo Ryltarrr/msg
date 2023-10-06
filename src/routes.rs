@@ -3,22 +3,17 @@ use axum_macros::debug_handler;
 use sqlx::SqlitePool;
 
 use crate::{
-    markup::{IndexTemplate, MessageItemTemplate, MessagesTemplate},
+    markup::{IndexTemplate, MessageItemTemplate},
     CreateMessage,
 };
 use crate::{AppResult, Message};
 
-pub async fn root() -> IndexTemplate {
-    IndexTemplate {}
-}
-
-pub async fn fetch_messages(State(pool): State<SqlitePool>) -> AppResult<MessagesTemplate> {
-    let records = sqlx::query_as!(Message, "select * from messages")
+pub async fn root(State(pool): State<SqlitePool>) -> AppResult<IndexTemplate> {
+    let messages = sqlx::query_as!(Message, "select * from messages")
         .fetch_all(&pool)
         .await?;
 
-    // Json(records)
-    Ok(MessagesTemplate { messages: records })
+    Ok(IndexTemplate { messages })
 }
 
 #[debug_handler]

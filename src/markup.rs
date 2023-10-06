@@ -9,7 +9,9 @@ pub struct HelloTemplate<'a> {
 
 #[derive(Template)]
 #[template(path = "index.html")]
-pub struct IndexTemplate {}
+pub struct IndexTemplate {
+    pub(crate) messages: Vec<Message>,
+}
 
 #[derive(Template)]
 #[template(path = "messages.html")]
